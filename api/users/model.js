@@ -29,7 +29,7 @@ const UserSchema = new Schema({
         type: String,
         default: "user",
         enum: ["landlord", "admin", "renter"],
-        required: [true, "please provide a role "]
+        default: 'renter'
     },
     created: Date,
     modified: Date

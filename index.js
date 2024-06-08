@@ -7,15 +7,17 @@ const passport = require('passport');
 const User = require('./api/users/model');
 
 const app = express();
+app.use(express.json())
+app.use(cors())
 
 var opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = 'mysecret';
 
 
-passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
+passport.use(new JwtStrategy(opts, async function(jwt_payload, done) {
     try {
-        const user = User.findById( jwt_payload.sub);
+        const user = await User.findById( jwt_payload.sub);
         if (user) {
             return done(null, user);
         } else {
@@ -28,17 +30,18 @@ passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
 }));
 
 const key =
-  "mongodb+srv://jlrodriguez:sixqMkLySebh0Fe6@cluster0.vamq1s5.mongodb.net/FlatsNodeJs?retryWrites=true&w=majority&appName=Cluster0";
-
+'mongodb+srv://edavila:c3G2XQi33BmwpYDM@cluster0.3nhzhkn.mongodb.net/NewFlats?retryWrites=true&w=majority&appName=Cluster0'
 const OPT = {
   useNewUrlParser: true,
 };
 
 const authRoutes = require('./api/auth/routes')
 const userRoutes = require('./api/users/routes')
+const flatsRoutes = require('./api/flats/routes')
 
 app.use("/users", authRoutes);
 app.use("/users", userRoutes);
+app.use('/flats', flatsRoutes)
 
 
 

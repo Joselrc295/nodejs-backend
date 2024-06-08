@@ -47,3 +47,17 @@ exports.logIn = async (req,res)=>{
 const signToken = (user)=>{
     return jwt.sign({sub: user.id, email:user.email},"mysecret", {});
 }
+
+exports.isLandlord = async (req , res , next)=>{
+    const role = req.user.role ;
+    if (role === 'renter' || role === 'admin'){
+        return next()  
+    }
+    else{
+        res.status(403).json({
+            status: 'fail' ,
+            message: 'Error'
+        })
+    }
+    
+}
