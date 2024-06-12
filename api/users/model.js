@@ -31,6 +31,7 @@ const UserSchema = new Schema({
         enum: ["landlord", "admin", "renter"],
         default: 'renter'
     },
+
     created: Date,
     modified: Date
 });
