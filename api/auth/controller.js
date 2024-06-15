@@ -50,7 +50,7 @@ const signToken = (user)=>{
 
 exports.isLandlord = async (req , res , next)=>{
     const role = req.user.role ;
-    if (role === 'renter' || role === 'admin'){
+    if (role === 'landlord' || role === 'admin'){
         return next()  
     }
     else{
