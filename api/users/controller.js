@@ -4,16 +4,23 @@ exports.update = (req, res) => {
 };
 
 exports.getAllUsers = async (req, res) => {
-  const filter = req.query.filter || {};
+  const filter = req.query || {};
   const queryfilter = {};
+
   if (filter.role) {
-    queryfilter.firstName = { $eq: filter.role };
+    queryfilter.role = { $eq: filter.role };
   }
   if (filter.flatCountMin) {
     queryfilter.flatCount = { $gte: parseInt(filter.flatCountMin) };
   }
   if (filter.flatCountMax) {
     queryfilter.flatCount = { $lte: parseInt(filter.flatCountMax) };
+  }
+  if (filter.ageMin) {
+    queryfilter.age = { $gte: parseInt(filter.ageMin) };
+  }
+  if (filter.ageMax) {
+    queryfilter.age = { $lte: parseInt(filter.ageMax) };
   }
 
   const orderBy = req.query.orderBy || "firstName";

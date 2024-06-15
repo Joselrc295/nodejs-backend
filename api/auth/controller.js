@@ -6,9 +6,16 @@ exports.register =  async(req, res)=>{
         user.created= new Date();
         user.modified=new Date();
         const newSave = await user.save();
-        res.status(201).json({
+        const token = signToken(newSave)
+        const returnUser = {
+            firstName: newSave.firstName,
+            lastName: newSave.lastName,
+            email: newSave.email,
+            role: newSave.role
+        }
+      return   res.status(201).json({
             message: 'User created successfully',
-            data: newSave, token
+            data: returnUser, token
         });
     }
     catch(err){
@@ -30,19 +37,26 @@ exports.logIn = async (req,res)=>{
     }
     const userExist = await User.findOne({email: email});
     if (!userExist|| !userExist.authenticate(password)) {
-        res.status(404).json({
+       return res.status(404).json({
             status: "fail",
             message: "Invalid credentials",
           });
+    }
+    
+    const returnUser = {
+        firstName: userExist.firstName,
+        lastName: userExist.lastName,
+        email: userExist.email,
+        role: userExist.role
     }
     const token = signToken(userExist)
    return   res.status(200).json({
         status: "success",
         data: userExist,
         token,
-        data:{
-            user:userExist
-        }
+        data:
+          returnUser
+        
       });
 
 }
