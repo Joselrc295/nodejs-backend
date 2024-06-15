@@ -5,10 +5,10 @@ exports.register =  async(req, res)=>{
         const user = new User(req.body);
         user.created= new Date();
         user.modified=new Date();
-        await user.save();
+        const newSave = await user.save();
         res.status(201).json({
             message: 'User created successfully',
-            data: user
+            data: newSave, token
         });
     }
     catch(err){
@@ -39,7 +39,10 @@ exports.logIn = async (req,res)=>{
    return   res.status(200).json({
         status: "success",
         data: userExist,
-        token
+        token,
+        data:{
+            user:userExist
+        }
       });
 
 }
