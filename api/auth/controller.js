@@ -47,7 +47,9 @@ exports.logIn = async (req,res)=>{
         firstName: userExist.firstName,
         lastName: userExist.lastName,
         email: userExist.email,
+        birthday: userExist.birthday,
         role: userExist.role
+      
     }
     const token = signToken(userExist)
    return   res.status(200).json({
