@@ -6,6 +6,8 @@ const authController = require('../auth/controller')
 
 router.post('/' , passport.authenticate('jwt',{session:false}) ,authController.isLandlord , controller.createFlats);
 router.get('/' , passport.authenticate('jwt',{session:false}) ,authController.isLandlord , controller.getAllFlats);
+router.get('/my' , passport.authenticate('jwt',{session:false}) , controller.getMyFlats);
+
 
 module.exports = router
 
