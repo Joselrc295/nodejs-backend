@@ -25,3 +25,11 @@ exports.getAllFlats = async (req , res) =>{
         data: flats
     })
 }
+
+exports.getMyFlats = async (req ,res) =>{
+    const myFlats = await Flat.find({ownerID: req.user._id})
+    res.status(200).json({
+        message: "your flats" ,
+        data: myFlats
+    })
+}
