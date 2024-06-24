@@ -44,11 +44,17 @@ exports.updateCurrentUser = async (req, res) => {
   }
 };
 exports.getAllUsers = async (req, res) => {
-  const filter = req.query || {};
+  const filter = req.query.filter || {};
   const queryfilter = {};
 
   if (filter.role) {
     queryfilter.role = { $eq: filter.role };
+  }
+  if (filter.firstName) {
+    queryfilter.firstName = { $eq: filter.firstName };
+  }
+  if (filter.lastName) {
+    queryfilter.lastName = { $eq: filter.lastName };
   }
   if (filter.flatCountMin) {
     queryfilter.flatCount = { $gte: parseInt(filter.flatCountMin) };
@@ -56,11 +62,17 @@ exports.getAllUsers = async (req, res) => {
   if (filter.flatCountMax) {
     queryfilter.flatCount = { $lte: parseInt(filter.flatCountMax) };
   }
+  if(filter.flatCountMin && filter.flatCountMax) {
+    queryfilter.flatCount = { $gte: parseInt(filter.flatCountMin), $lte: parseInt(filter.flatCountMax) };
+  }
   if (filter.ageMin) {
     queryfilter.age = { $gte: parseInt(filter.ageMin) };
   }
   if (filter.ageMax) {
     queryfilter.age = { $lte: parseInt(filter.ageMax) };
+  }
+  if(filter.ageMin && filter.ageMax) {
+    queryfilter.age = { $gte: parseInt(filter.ageMin), $lte: parseInt(filter.ageMax)};
   }
 
   const orderBy = req.query.orderBy || "firstName";
@@ -112,6 +124,7 @@ exports.getAllUsers = async (req, res) => {
 exports.getUserById = async (req, res) => {
   try {
     let id = req.params.id;
+
     console.log("Fetching user with ID:", id);
 
     let user = await User.findById(id);
@@ -135,3 +148,20 @@ exports.getUserById = async (req, res) => {
     });
   }
 };
+
+exports.deleteUserById = async (req, res) => {
+  try {
+    const userId = req.params.id
+
+    const result = await User.deleteOne({ _id: userId });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "User deleted successfully", data: result });
+  } catch (err) {
+    console.error("Error deleting user:", err);
+    res.status(400).json({ message: "fail", data: err });
+  }
+}

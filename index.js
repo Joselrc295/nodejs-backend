@@ -29,7 +29,7 @@ passport.use(new JwtStrategy(opts, async function(jwt_payload, done) {
     }
 }));
 
-const key = "mongodb+srv://edavila:c3G2XQi33BmwpYDM@cluster0.3nhzhkn.mongodb.net/FlatFinder?retryWrites=true&w=majority&appName=Cluster0"
+const key ="mongodb+srv://jlrodriguez:sixqMkLySebh0Fe6@cluster0.vamq1s5.mongodb.net/FlatsFINDER?retryWrites=true&w=majority&appName=Cluster0"
 const OPT = {
   useNewUrlParser: true,
 };

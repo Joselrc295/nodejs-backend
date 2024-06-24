@@ -7,5 +7,6 @@ router.patch('/update-profile/:id', passport.authenticate('jwt',{session:false})
 router.patch('/update-profile', passport.authenticate('jwt',{session:false}) ,controller.updateCurrentUser);
 router.get('/', passport.authenticate('jwt',{session:false}) ,controller.getAllUsers);
 router.get('/:id', passport.authenticate('jwt', { session: false }), controller.getUserById);
+router.delete('/delete/:id', passport.authenticate('jwt', { session: false }), controller.deleteUserById);
 
 module.exports = router
