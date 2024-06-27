@@ -46,6 +46,9 @@ exports.updateCurrentUser = async (req, res) => {
 exports.getAllUsers = async (req, res) => {
   const filter = req.query.filter || {};
   const queryfilter = {};
+  const ageMin = filter.ageMin ? parseInt(filter.ageMin) : null;
+  const ageMax = filter.ageMax ? parseInt(filter.ageMax) : null;
+  const today = new Date();
 
   if (filter.role) {
     queryfilter.role = { $eq: filter.role };
@@ -65,14 +68,13 @@ exports.getAllUsers = async (req, res) => {
   if(filter.flatCountMin && filter.flatCountMax) {
     queryfilter.flatCount = { $gte: parseInt(filter.flatCountMin), $lte: parseInt(filter.flatCountMax) };
   }
-  if (filter.ageMin) {
-    queryfilter.age = { $gte: parseInt(filter.ageMin) };
+  if (ageMin) {
+    const dateMin = new Date(today.setFullYear(today.getFullYear() - ageMin));
+    queryfilter.birthday = { ...queryfilter.birthday, $lte: dateMin };
   }
-  if (filter.ageMax) {
-    queryfilter.age = { $lte: parseInt(filter.ageMax) };
-  }
-  if(filter.ageMin && filter.ageMax) {
-    queryfilter.age = { $gte: parseInt(filter.ageMin), $lte: parseInt(filter.ageMax)};
+  if (ageMax) {
+    const dateMax = new Date(today.setFullYear(today.getFullYear() - ageMax));
+    queryfilter.birthday = { ...queryfilter.birthday, $gte: dateMax };
   }
 
   const orderBy = req.query.orderBy || "firstName";
