@@ -8,6 +8,7 @@ exports.getFavorites = async (req, res) =>{
     })
 }
 exports.addFavorites = async (req, res)=>{
+    console.log(req.body)
     const favorite = new favoriteFlat(req.body);
     favorite.userID = req.user._id
     await favorite.save()

@@ -33,3 +33,12 @@ exports.getMyFlats = async (req ,res) =>{
         data: myFlats
     })
 }
+
+exports.getFlatByID = async (req , res) =>{
+    const id = req.params.id
+    const flat = await Flat.findById(id)
+    res.status(200).json({
+        status: 'success',
+        data: flat
+      });
+}
