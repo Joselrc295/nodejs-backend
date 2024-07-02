@@ -69,11 +69,13 @@ exports.getAllUsers = async (req, res) => {
     queryfilter.flatCount = { $gte: parseInt(filter.flatCountMin), $lte: parseInt(filter.flatCountMax) };
   }
   if (ageMin) {
-    const dateMin = new Date(today.setFullYear(today.getFullYear() - ageMin));
+    const dateMin = new Date(today);
+    dateMin.setFullYear(dateMin.getFullYear() - ageMin);
     queryfilter.birthday = { ...queryfilter.birthday, $lte: dateMin };
   }
   if (ageMax) {
-    const dateMax = new Date(today.setFullYear(today.getFullYear() - ageMax));
+    const dateMax = new Date(today);
+    dateMax.setFullYear(dateMax.getFullYear() - ageMax);
     queryfilter.birthday = { ...queryfilter.birthday, $gte: dateMax };
   }
 

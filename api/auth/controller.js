@@ -54,7 +54,7 @@ exports.logIn = async (req,res)=>{
     const token = signToken(userExist)
    return   res.status(200).json({
         status: "success",
-        data: userExist,
+        data: returnUser,
         token,
         data:
           returnUser
@@ -79,4 +79,15 @@ exports.isLandlord = async (req , res , next)=>{
         })
     }
     
+}
+exports.isAdmin = (req, res, next) => {
+    const role = req.user.role;
+    if (role === 'admin') {
+        return next() ;
+    } else {
+        return res.status(403).json({
+            status: 'fail',
+            message: 'Admin access denied'
+        });
+    }
 }
