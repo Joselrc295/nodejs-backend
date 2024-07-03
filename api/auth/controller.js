@@ -44,11 +44,12 @@ exports.logIn = async (req,res)=>{
     }
     
     const returnUser = {
-        firstName: userExist.firstName,
+        firstName: userExist.firstName, 
         lastName: userExist.lastName,
         email: userExist.email,
         birthday: userExist.birthday,
-        role: userExist.role
+        role: userExist.role,
+        id: userExist.id
       
     }
     const token = signToken(userExist)
