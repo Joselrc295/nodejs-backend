@@ -13,6 +13,12 @@ const FlatSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'users'
     },
+    flatCreator: String,
+    flatCreatorEmail: String, 
+    status:{ 
+    type: Boolean, 
+    default: true    
+    },
     dateAvailable: Date ,
     created: Date ,
     modified: Date
