@@ -71,7 +71,18 @@ exports.getAllFlats = async (req , res) =>{
 }
 
 exports.getMyFlats = async (req ,res) =>{
-    const myFlats = await Flat.find({ownerID: req.user._id})
+    const filters = req.query.filter || {}
+    const queryfilter = {}
+    if(filters.status){
+        const statusP = filters.status =='true' ? true: false;
+        queryfilter.status = {$eq: statusP}
+    }
+    queryfilter.ownerID = req.user._id
+    const myFlats = await Flat.aggregate([
+        {
+            $match: queryfilter
+        }
+    ])
     res.status(200).json({
         message: "your flats" ,
         data: myFlats
