@@ -1,4 +1,5 @@
 const User = require("./model");
+const sendEmail = require("../../service/email")
 
 exports.updateUserById = async (req, res) => {
   try {
@@ -168,4 +169,31 @@ exports.deleteUserById = async (req, res) => {
     console.error("Error deleting user:", err);
     res.status(400).json({ message: "fail", data: err });
   }
+};
+exports.forgotPassword = async (req, res) => {
+  const email = req.body.email;
+  const validationEmail = await User.findOne({email});
+
+  if (!validationEmail) {
+    return res.status(400).json({ message: "Email not found" });
+  }
+  const token = validationEmail.generatePasswordResetToken();
+  validationEmail.save();
+  await sendEmail({
+    email: email,
+    subject: "Reset Password",
+    message: `Your token is ${token} or go to this link `,
+  });
+  return res.status(200).json({message:"Email sent successfully"})
+};
+exports.resetPassword = async(req, res) => {
+    const token = req.body.token;
+    const password =  req.body.password;
+    const user = await User.findOne({resetPasswordToken:token});
+    if (!user) {
+        return res.status(400).json({ message: "Invalid token" });
+    }
+    user.resetPassword (password);
+    user.save();
+    return res.status(200).json({message:"Password reset successfully"})
 }

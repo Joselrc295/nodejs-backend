@@ -45,7 +45,7 @@ app.use("/users", authRoutes);
 app.use("/users", userRoutes);
 app.use("/flats", flatsRoutes);
 app.use("/favorites", favoriteRoutes);
-app.use('/messages', messageRouter); // Ruta para mensajes
+app.use('/messages', messageRouter); 
 
 
 
