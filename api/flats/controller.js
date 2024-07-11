@@ -22,6 +22,7 @@ exports.createFlats = async (req , res) =>{
 }
 
 exports.deleteFlat = async (req ,res) =>{
+    try{
     const id = req.params.id
     const flatForDelete = await  Flat.findByIdAndUpdate(id , {status: false}, {
         new: true, 
@@ -32,21 +33,24 @@ exports.deleteFlat = async (req ,res) =>{
         message: 'Success', 
         response: flatForDelete
     })
-
+    }catch(err){
+        console.log(err)
+    }
 
 }
 
 exports.getAllFlats = async (req , res) =>{
+    try{
     const filters = req.query.filter || {}
     const queryfilter = {}
     if(filters.status){
         const statusP = filters.status =='true' ? true: false;
         queryfilter.status = {$eq: statusP}
     }
-    console.log(queryfilter)
     if(filters.city){
         queryfilter.city = {$eq: filters.city}
     }
+    console.log(queryfilter)
     if(filters.rentPriceMin && !filters.rentPriceMax){
         queryfilter.rentPrice = { $gte: parseInt(filters.rentPriceMin)}
     }
@@ -68,9 +72,13 @@ exports.getAllFlats = async (req , res) =>{
         message: "Flats",
         data: flats
     })
+    }catch(err){
+        console.log(err)
+    }
 }
 
 exports.getMyFlats = async (req ,res) =>{
+    try{
     const filters = req.query.filter || {}
     const queryfilter = {}
     if(filters.status){
@@ -87,18 +95,26 @@ exports.getMyFlats = async (req ,res) =>{
         message: "your flats" ,
         data: myFlats
     })
+    }catch(err){
+        console.log(err)
+    }
 }
 
 exports.getFlatByID = async (req , res) =>{
+    try{
     const id = req.params.id
     const flat = await Flat.findById(id)
     res.status(200).json({
         status: 'success',
         data: flat
       });
+    }catch(err){
+        console.log(err)
+    }
 }
 
 exports.updateFlatById = async (req, res) =>{
+    try{
     const id = req.params.id
     console.log(id)
     const updateData = req.body
@@ -110,4 +126,7 @@ exports.updateFlatById = async (req, res) =>{
         message: 'Success',
         data: updateFlat
     })
+    }catch(err){
+        console.log(err)
+    }
 }

@@ -1,4 +1,7 @@
 const User = require("./model");
+const Flats = require("../flats/model")
+const favoritesModel = require("../favorites/favoritesModel");
+
 
 exports.updateUserById = async (req, res) => {
   try {
@@ -156,6 +159,14 @@ exports.getUserById = async (req, res) => {
 exports.deleteUserById = async (req, res) => {
   try {
     const userId = req.params.id
+    
+    const flatsIds = await Flats.find({ownerID: userId})
+    const ids = flatsIds.map(doc => doc._id);
+    const flatsDeleted = await Flats.updateMany({ownerID: userId}, {status: false}, {
+      new: true,
+      runValidators: true
+    })
+    const deleteFavorites = await favoritesModel.deleteMany({flatID: {$in: ids}})
 
     const result = await User.deleteOne({ _id: userId });
 
@@ -169,3 +180,4 @@ exports.deleteUserById = async (req, res) => {
     res.status(400).json({ message: "fail", data: err });
   }
 }
+
