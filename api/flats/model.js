@@ -7,7 +7,7 @@ const FlatSchema = new Schema({
     streetNumber: String ,
     areaSize: Number ,
     hasAc: Boolean, 
-    yearBuilt: Date ,
+    yearBuilt: Number ,
     rentPrice: Number ,
     ownerID: {
         type: Schema.Types.ObjectId,

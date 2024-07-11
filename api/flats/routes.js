@@ -10,6 +10,8 @@ router.get('/my' , passport.authenticate('jwt',{session:false}) , controller.get
 router.get('/:id',  passport.authenticate('jwt',{session:false}) , controller.getFlatByID)
 router.patch('/:id', passport.authenticate('jwt',{session:false}), controller.updateFlatById)
 router.delete('/admin/:id', passport.authenticate('jwt',{session:false}), authController.isAdmin, controller.deleteFlat)
+router.delete('/:id',passport.authenticate('jwt',{session:false}),  controller.deleteFlat)
+
 
 module.exports = router
 

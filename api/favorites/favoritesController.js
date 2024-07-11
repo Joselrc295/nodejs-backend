@@ -1,6 +1,7 @@
 const favoriteFlat = require('./favoritesModel')
 
 exports.getFavorites = async (req, res) =>{
+    try{
     let favorites = await favoriteFlat.find({userID: req.user._id}).populate({
         path:'flatID'
     })
@@ -8,8 +9,12 @@ exports.getFavorites = async (req, res) =>{
         message: 'Success' ,
         data: favorites
     })
+    }catch(err){
+        console.log(err)
+    }
 }
 exports.addFavorites = async (req, res)=>{
+    try{
     console.log(req.body)
     const favorite = new favoriteFlat(req.body);
     favorite.userID = req.user._id
@@ -18,9 +23,13 @@ exports.addFavorites = async (req, res)=>{
         message: 'Saved',
         data: favorite 
     })
+    }catch(err){
+        console.log(err)
+    }
 }
 
 exports.removeFavorites = async (req, res)=>{
+    try{
     const userId = req.user._id ;
     const data = req.params.id;
     console.log(userId , data)
@@ -29,12 +38,19 @@ exports.removeFavorites = async (req, res)=>{
         status: 'succes' ,
         data : response
     })
+    }catch(err){
+        console.log(err)
+    }
 }
 
 exports.getFavoritesHome = async (req, res) =>{
+    try{
     let favorites = await favoriteFlat.find({userID: req.user._id})
     res.status(200).json({
         message: 'Success' ,
         data: favorites
     })
+    }catch(err){
+        console.log(err)
+    }
 }
