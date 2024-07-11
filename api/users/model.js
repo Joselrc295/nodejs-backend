@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const Schema = mongoose.Schema;
+const {v4: uuidv4} = require( 'uuid');
 
 const UserSchema = new Schema({
     firstName: {
@@ -33,7 +34,9 @@ const UserSchema = new Schema({
     },
 
     created: Date,
-    modified: Date
+    modified: Date,
+    resetPasswordToken: String,
+    passwordChangedAt: Date,
 });
 
 UserSchema.pre("save", async function (next) {
@@ -48,7 +51,31 @@ UserSchema.pre("save", async function (next) {
 UserSchema.methods ={
     authenticate : function(password) {
       return  bcrypt.compareSync(password, this.password)
+    },
+
+generatePasswordResetToken: function(){
+    this.resetPasswordToken = uuidv4();
+    return this.resetPasswordToken
+},
+resetPassword: function(password){
+    this.password = password;
+    this.resetPasswordToken = '';
+    this.passwordChangedAt = new Date();   
+
+},
+changePasswordAfter: function(JWTTimeStamp){
+    if(this.changePasswordAt){
+        const changedTimeStamp = parseInt(this.changePasswordAt.getTime()/1000);
+        return JWTTimeStamp < changeTimeStamp;
     }
+    return false;
+},
+toJson : function () {
+    const user = this.toObject();
+    delete user.password;
+    return user;
+    
+}
 }
 
 module.exports =mongoose.model('users', UserSchema)

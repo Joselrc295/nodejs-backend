@@ -9,5 +9,7 @@ router.patch('/update-profile', passport.authenticate('jwt',{session:false}) ,co
 router.get('/', passport.authenticate('jwt',{session:false}) , authControler.isAdmin, controller.getAllUsers);
 router.get('/:id', passport.authenticate('jwt', { session: false }),authControler.isAdmin, controller.getUserById);
 router.delete('/delete/:id', passport.authenticate('jwt', { session: false }),authControler.isAdmin, controller.deleteUserById);
+router.post('/forgot-password',controller.forgotPassword)
+router.post('/reset-password',controller.resetPassword)
 
 module.exports = router
