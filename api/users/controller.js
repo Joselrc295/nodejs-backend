@@ -180,6 +180,7 @@ exports.deleteUserById = async (req, res) => {
     console.error("Error deleting user:", err);
     res.status(400).json({ message: "fail", data: err });
   }
+}
 
 exports.forgotPassword = async (req, res) => {
   const email = req.body.email;
