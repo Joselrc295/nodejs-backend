@@ -85,9 +85,31 @@ exports.getAllUsers = async (req, res) => {
   const orderBy = req.query.orderBy || "firstName";
   const order = parseInt(req.query.order) || 1;
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
+  const limit = parseInt(req.query.limit) || 5;
 
   try {
+    const totalUsers = await User.aggregate([
+      {
+        $lookup: {
+          from: "flats",
+          localField: "_id",
+          foreignField: "ownerID",
+          as: "flats",
+        },
+      },
+      {
+        $addFields: {
+          flatCount: { $size: "$flats" },
+        },
+      },
+      {
+        $match: queryfilter,
+      }
+    ]);
+
+    const totalCount = totalUsers.length;
+    const totalPages = Math.ceil(totalCount / limit);
+
     const users = await User.aggregate([
       {
         $lookup: {
@@ -119,7 +141,7 @@ exports.getAllUsers = async (req, res) => {
       },
     ]).collation({ locale: "en", strength: 2 });
 
-    res.status(200).json({ message: "Users", data: users });
+    res.status(200).json({ message: "Users", data: users, totalPages: totalPages });
   } catch (err) {
     console.error("Error fetching users:", err);
     res.status(400).json({
