@@ -19,8 +19,10 @@ exports.register =  async(req, res)=>{
         });
     }
     catch(err){
+        console.log(err.errorResponse.code);
         res.status(400).json({
-            message: err.message
+            code:err.errorResponse.code,
+            message: err.errorResponse.errmsg
         });
     }
 }
