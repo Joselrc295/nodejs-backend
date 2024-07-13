@@ -63,15 +63,36 @@ exports.getAllFlats = async (req , res) =>{
     if(filters.areaSizeMin && filters.areaSizeMax){
         queryfilter.areaSize = { $gte: parseInt(filters.areaSizeMin), $lte: parseInt(filters.areaSizeMax)}
     }
+    const orderBy = req.query.orderBy || "city";
+    const order = parseInt(req.query.order) || 1;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
     const flats= await Flat.aggregate([
     {
         $match: queryfilter,
     },
-    ])./*populate("ownerID")*/exec();
+    {
+        $skip: (page - 1) * limit,
+    },
+    {
+        $limit: limit,
+    },
+    {
+        $sort: {
+          [orderBy]: order,
+          _id: 1
+        },
+    },
+    ]).exec();
+    let totalCount = await Flat.find(queryfilter).countDocuments();
+    totalCount = Math.ceil(totalCount / 5)
+    console.log(totalCount)
     res.status(200).json({
         message: "Flats",
-        data: flats
+        data: flats ,
+        totalPages: totalCount
     })
+    
     }catch(err){
         console.log(err)
     }
