@@ -32,6 +32,10 @@ const UserSchema = new Schema({
         enum: ["landlord", "admin", "renter"],
         default: 'renter'
     },
+    avatar: {
+        type: String, // URL de la imagen del avatar
+        default: "" 
+    },
 
     created: Date,
     modified: Date,
