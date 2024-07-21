@@ -1,10 +1,15 @@
 const User = require ('../users/model')
 const jwt = require("jsonwebtoken");
+const path = require('path');
 exports.register = async (req, res) => {
     try {
       const user = new User(req.body);
       user.created = new Date();
       user.modified = new Date();
+
+      if (req.file) {
+        user.avatar = path.join('/uploads', req.file.filename);
+    }
       const newSave = await user.save();
       const token = signToken(newSave);
       const returnUser = {
@@ -12,6 +17,7 @@ exports.register = async (req, res) => {
         lastName: newSave.lastName,
         email: newSave.email,
         role: newSave.role,
+        avatar: newSave.avatar,
       };
       return res.status(201).json({
         message: 'User created successfully',
