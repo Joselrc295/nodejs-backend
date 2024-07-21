@@ -1,31 +1,31 @@
 const User = require ('../users/model')
 const jwt = require("jsonwebtoken");
-exports.register =  async(req, res)=>{
-    try{
-        const user = new User(req.body);
-        user.created= new Date();
-        user.modified=new Date();
-        const newSave = await user.save();
-        const token = signToken(newSave)
-        const returnUser = {
-            firstName: newSave.firstName,
-            lastName: newSave.lastName,
-            email: newSave.email,
-            role: newSave.role
-        }
-      return   res.status(201).json({
-            message: 'User created successfully',
-            data: returnUser, token
-        });
+exports.register = async (req, res) => {
+    try {
+      const user = new User(req.body);
+      user.created = new Date();
+      user.modified = new Date();
+      const newSave = await user.save();
+      const token = signToken(newSave);
+      const returnUser = {
+        firstName: newSave.firstName,
+        lastName: newSave.lastName,
+        email: newSave.email,
+        role: newSave.role,
+      };
+      return res.status(201).json({
+        message: 'User created successfully',
+        data: returnUser,
+        token,
+      });
+    } catch (err) {
+      const errorCode = err.code || 400;
+      res.status(errorCode).json({
+        code: err.code,
+        message: err.message,
+      });
     }
-    catch(err){
-        console.log(err.errorResponse.code);
-        res.status(400).json({
-            code:err.errorResponse.code,
-            message: err.errorResponse.errmsg
-        });
-    }
-}
+  };
 
 exports.logIn = async (req, res) => {
     try {
