@@ -31,6 +31,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+// Servir archivos estáticos desde la carpeta 'uploads'
+app.use('/uploads', express.static(uploadDir));
+
 var opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = 'mysecret';
@@ -67,4 +70,6 @@ app.use('/messages', messageRouter);
 
 mongoose.connect(key, OPT);
 
-app.listen(3001);
+app.listen(3001, () => {
+    console.log('Server is running on port 3001');
+});
