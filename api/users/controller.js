@@ -1,51 +1,72 @@
 const User = require("./model");
 const Flats = require("../flats/model")
 const favoritesModel = require("../favorites/favoritesModel");
-const sendEmail = require("../../service/email")
+const sendEmail = require("../../service/email");
+const path = require('path');
+const fs = require('fs');
 
+
+const deleteOldAvatar = (avatarPath) => {
+  if (avatarPath) {
+    const fullPath = path.join(__dirname, '..', '..', avatarPath);
+    fs.unlink(fullPath, (err) => {
+      if (err) console.error(`Error deleting old avatar: ${err}`);
+    });
+  }
+};
 exports.updateUserById = async (req, res) => {
   try {
     const id = req.params.id;
     const userData = req.body;
+    if (req.file) {
+      userData.avatar = `/uploads/${req.file.filename}`;
+      const oldUser = await User.findById(id);
+      deleteOldAvatar(oldUser.avatar);
+    }
     const user = await User.findByIdAndUpdate(id, userData, {
       new: true,
-      runValidators: true
+      runValidators: true,
     });
     res.status(200).json({
       status: 'success',
       data: user,
-      message: 'user updated'
+      message: 'user updated',
     });
   } catch (err) {
     console.error("Error updating user:", err);
     res.status(400).json({
       status: 'fail',
-      message: 'error' + err
+      message: 'error' + err,
     });
   }
 };
 
 exports.updateCurrentUser = async (req, res) => {
   try {
-    const userId = req.user._id
+    const userId = req.user._id;
     const userData = req.body;
+    if (req.file) {
+      userData.avatar = `/uploads/${req.file.filename}`;
+      const oldUser = await User.findById(userId);
+      deleteOldAvatar(oldUser.avatar);
+    }
     const user = await User.findByIdAndUpdate(userId, userData, {
       new: true,
-      runValidators: true
+      runValidators: true,
     });
     res.status(200).json({
       status: 'success',
       data: user,
-      message: 'user updated'
+      message: 'user updated',
     });
   } catch (err) {
     console.error("Error updating user:", err);
     res.status(400).json({
       status: 'fail',
-      message: 'error' + err
+      message: 'error' + err,
     });
   }
-};
+}
 exports.getAllUsers = async (req, res) => {
   const filter = req.query.filter || {};
   const queryfilter = {};
