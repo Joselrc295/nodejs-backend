@@ -17,6 +17,7 @@ exports.register = async (req, res) => {
         lastName: newSave.lastName,
         email: newSave.email,
         role: newSave.role,
+        birthday: newSave.birthday,
         avatar: newSave.avatar,
       };
       return res.status(201).json({
@@ -60,7 +61,8 @@ exports.logIn = async (req, res) => {
             email: userExist.email,
             birthday: userExist.birthday,
             role: userExist.role,
-            id: userExist.id
+            id: userExist.id,
+            avatar: userExist.avatar
         };
 
         const token = signToken(userExist);
