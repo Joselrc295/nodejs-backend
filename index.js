@@ -31,8 +31,18 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Servir archivos estáticos desde la carpeta 'uploads'
-app.use('/uploads', express.static(uploadDir));
+// Servir archivos estáticos desde la carpeta 'uploads' con caching
+app.use('/uploads', express.static(uploadDir, {
+    maxAge: '1d', // Cachear archivos durante un día
+    setHeaders: (res, path) => {
+        if (path.endsWith('.html')) {
+            res.setHeader('Cache-Control', 'no-cache');
+        } else {
+            res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cachear otros archivos durante un año
+        }
+    }
+}));
+
 
 var opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
