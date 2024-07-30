@@ -237,66 +237,67 @@ exports.forgotPassword = async (req, res) => {
   await validationEmail.save();
 
   const htmlMessage = `
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Password</title>
-    <style>
-      @import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
-      body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f8fafc;
-        color: #333;
-        padding: 20px;
-      }
-      .container {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
-      .header {
-        text-align: center;
-        padding: 20px;
-        background-color: #333A93;
-        color: white;
-        border-radius: 8px 8px 0 0;
-      }
-      .content {
-        padding: 20px;
-      }
-      .button {
-        background-color: #3490dc;
-        color: white;
-        padding: 10px 20px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        margin: 20px 0;
-        border-radius: 5px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="header">
-        <h1>Flat-Finder</h1>
-      </div>
-      <div class="content">
-        <p>Hi,</p>
-        <p>You have requested to reset your password. Use the following token to reset it:</p>
-        <p ><strong>${token}</strong></p>
-        <p>If you have not requested to reset your password, please ignore this email.</p>
-        <p>Thanks,<br>The Flat-Finder Team</p>
-      </div>
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reset Password</title>
+  <style>
+    @import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8fafc;
+      color: #333;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+      text-align: center;
+      padding: 20px;
+      background-color: #7946d0;
+      color: white;
+      border-radius: 8px 8px 0 0;
+    }
+    .content {
+      padding: 20px;
+    }
+    .button {
+      background-color: #7946d0;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      margin: 20px 0;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Flat-Finder</h1>
     </div>
-  </body>
-  </html>
+    <div class="content">
+      <p>Hi,</p>
+      <p>You have requested to reset your password. Use the following token to reset it:</p>
+      <p><strong>${token}</strong></p>
+      <p>If you have not requested to reset your password, please ignore this email.</p>
+      <p>Thanks,<br>The Flat-Finder Team</p>
+    </div>
+  </div>
+</body>
+</html>
+
   `;
 
   await sendEmail({
