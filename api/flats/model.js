@@ -9,6 +9,10 @@ const FlatSchema = new Schema({
     hasAc: Boolean, 
     yearBuilt: Number ,
     rentPrice: Number ,
+    image: {
+        type: String,
+        default: ""
+    },
     ownerID: {
         type: Schema.Types.ObjectId,
         ref: 'users'

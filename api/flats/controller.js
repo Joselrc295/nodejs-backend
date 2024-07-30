@@ -1,14 +1,29 @@
 const Flat = require('./model')
 const FavoriteRef = require('../favorites/favoritesModel')
+const path = require('path')
+const fs = require('fs')
+
+const deleteOldImage = (imagePath) => {
+    if (imagePath) {
+      const fullPath = path.join(__dirname, '..', '..', imagePath);
+      fs.unlink(fullPath, (err) => {
+        if (err) console.error(`Error deleting old avatar: ${err}`);
+      });
+    }
+  };
 
 exports.createFlats = async (req , res) =>{
     try{
         const flat = new Flat(req.body) ;
         flat.created = new Date() ;
         flat.modified = new Date() ;
+        if(req.file) {
+            flat.image = path.join('/uploads', req.file.filename) 
+        }
         flat.ownerID = req.user._id ;
         flat.flatCreator = req.user.firstName ;
         flat.flatCreatorEmail = req.user.email ; 
+        
         await flat.save()
         res.status(201).json({
             message : 'flat created' ,
@@ -63,6 +78,7 @@ exports.getAllFlats = async (req , res) =>{
     if(filters.areaSizeMin && filters.areaSizeMax){
         queryfilter.areaSize = { $gte: parseInt(filters.areaSizeMin), $lte: parseInt(filters.areaSizeMax)}
     }
+    console.log(queryfilter)
     const orderBy = req.query.orderBy || "city";
     const order = parseInt(req.query.order) || 1;
     const page = parseInt(req.query.page) || 1;
@@ -139,6 +155,11 @@ exports.updateFlatById = async (req, res) =>{
     const id = req.params.id
     console.log(id)
     const updateData = req.body
+    if (req.file){
+        updateData.image = `/uploads/${req.file.filename}`
+        const oldFlat = await Flat.findById(id);
+        deleteOldImage(oldFlat.image);
+    }
     const updateFlat = await Flat.findByIdAndUpdate(id, updateData, {
         new: true, 
         runValidators: true
