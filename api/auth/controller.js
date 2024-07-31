@@ -19,6 +19,7 @@ exports.register = async (req, res) => {
         role: newSave.role,
         birthday: newSave.birthday,
         avatar: newSave.avatar,
+        id: newSave.id
       };
       return res.status(201).json({
         message: 'User created successfully',
