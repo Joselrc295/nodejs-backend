@@ -2,15 +2,18 @@ const User = require("./model");
 const Flats = require("../flats/model")
 const favoritesModel = require("../favorites/favoritesModel");
 const sendEmail = require("../../service/email");
+const jwt = require('jsonwebtoken');
 const path = require('path');
 const fs = require('fs');
-
+const { v4: uuidv4 } = require('uuid'); 
 
 const deleteOldAvatar = (avatarPath) => {
   if (avatarPath) {
     const fullPath = path.join(__dirname, '..', '..', avatarPath);
     fs.unlink(fullPath, (err) => {
-      if (err) console.error(`Error deleting old avatar: ${err}`);
+      if (err && err.code !== 'ENOENT') {
+        console.error(`Error deleting old avatar: ${err}`);
+      }
     });
   }
 };
@@ -318,4 +321,49 @@ exports.resetPassword = async(req, res) => {
     user.resetPassword (password);
     user.save();
     return res.status(200).json({message:"Password reset successfully"})
-}
+};
+exports.googleLogin = async (req, res) => {
+  const { email, firstName, lastName, avatar } = req.body;
+
+  try {
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = new User({
+        email,
+        firstName,
+        lastName,
+        avatar,
+        role: 'renter', // Asegúrate de que 'renter' es un valor válido en el enum de roles
+        birthday: new Date(), // Proporcionar una fecha de cumpleaños por defecto
+        created: new Date(),
+        modified: new Date(),
+        password: uuidv4() // Genera un UUID como contraseña por defecto
+      });
+
+      await user.save();
+    }
+
+    const token = jwt.sign({ sub: user.id, email: user.email }, "mysecret", {});
+    const returnUser = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar,
+      id: user.id
+    };
+
+    res.status(200).json({
+      status: 'success',
+      data: returnUser,
+      token: token
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: 'An error occurred during Google login',
+      error: error.message
+    });
+  }
+};

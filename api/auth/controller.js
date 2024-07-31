@@ -6,10 +6,10 @@ exports.register = async (req, res) => {
       const user = new User(req.body);
       user.created = new Date();
       user.modified = new Date();
-
+  
       if (req.file) {
         user.avatar = path.join('/uploads', req.file.filename);
-    }
+      }
       const newSave = await user.save();
       const token = signToken(newSave);
       const returnUser = {
@@ -27,14 +27,19 @@ exports.register = async (req, res) => {
         token,
       });
     } catch (err) {
-      const errorCode = err.code || 400;
-      res.status(errorCode).json({
-        code: err.code,
+      if (err.code === 11000) {
+        return res.status(400).json({
+          code: 11000,
+          message: 'Duplicate email error'
+        });
+      }
+      res.status(400).json({
+        code: err.code || 400,
         message: err.message,
       });
     }
   };
-
+  
 exports.logIn = async (req, res) => {
     try {
         let email = req.body.email;
@@ -81,6 +86,7 @@ exports.logIn = async (req, res) => {
         });
     }
 };
+
 
 const signToken = (user)=>{
     return jwt.sign({sub: user.id, email:user.email},"mysecret", {});

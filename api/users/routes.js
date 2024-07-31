@@ -25,4 +25,7 @@ router.delete('/delete/:id', passport.authenticate('jwt', { session: false }), a
 router.post('/forgot-password', controller.forgotPassword);
 router.post('/reset-password', controller.resetPassword);
 
+// Nueva ruta para Google login (no protegida por autenticación)
+router.post('/google-login', controller.googleLogin);
+
 module.exports = router;

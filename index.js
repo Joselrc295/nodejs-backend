@@ -43,7 +43,6 @@ app.use('/uploads', express.static(uploadDir, {
     }
 }));
 
-
 var opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = 'mysecret';
@@ -63,7 +62,7 @@ passport.use(new JwtStrategy(opts, async function(jwt_payload, done) {
 
 const key = "mongodb+srv://jlrodriguez:sixqMkLySebh0Fe6@cluster0.vamq1s5.mongodb.net/FlatsFINDER?retryWrites=true&w=majority&appName=Cluster0";
 const OPT = {
-    useNewUrlParser: true,
+    useUnifiedTopology: true, // Esta opción es recomendada para usar con `useNewUrlParser`
 };
 
 const favoriteRoutes = require('./api/favorites/favoriteRoutes');
@@ -71,14 +70,16 @@ const authRoutes = require('./api/auth/routes');
 const userRoutes = require('./api/users/routes');
 const flatsRoutes = require('./api/flats/routes');
 const messageRouter = require('./api/messages/routes');
-
+d
 app.use("/users", authRoutes);
 app.use("/users", userRoutes);
 app.use("/flats", flatsRoutes);
 app.use("/favorites", favoriteRoutes);
 app.use('/messages', messageRouter);
 
-mongoose.connect(key, OPT);
+mongoose.connect(key, OPT)
+    .then(() => console.log('Database connected successfully'))
+    .catch(err => console.error('Database connection error:', err));
 
 app.listen(3001, () => {
     console.log('Server is running on port 3001');
