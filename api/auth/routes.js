@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const controller = require("./controller");
 const multer = require('multer');
+const path = require('path');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -13,6 +14,11 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+
 router.post('/register', upload.single('avatar'), controller.register);
 router.post('/login', controller.logIn);
+
+
+
 module.exports = router;
