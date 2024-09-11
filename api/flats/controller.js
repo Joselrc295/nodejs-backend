@@ -101,7 +101,7 @@ exports.getAllFlats = async (req , res) =>{
     },
     ]).exec();
     let totalCount = await Flat.find(queryfilter).countDocuments();
-    totalCount = Math.ceil(totalCount / 5)
+    totalCount = Math.ceil(totalCount / 4)
     console.log(totalCount)
     res.status(200).json({
         message: "Flats",

@@ -92,7 +92,7 @@ exports.getAllUsers = async (req, res) => {
   if (filter.flatCountMax) {
     queryfilter.flatCount = { $lte: parseInt(filter.flatCountMax) };
   }
-  if(filter.flatCountMin && filter.flatCountMax) {
+  if (filter.flatCountMin && filter.flatCountMax) {
     queryfilter.flatCount = { $gte: parseInt(filter.flatCountMin), $lte: parseInt(filter.flatCountMax) };
   }
   if (ageMin) {
@@ -152,16 +152,16 @@ exports.getAllUsers = async (req, res) => {
         $match: queryfilter,
       },
       {
-        $skip: (page - 1) * limit,
-      },
-      {
-        $limit: limit,
-      },
-      {
         $sort: {
           [orderBy]: order,
           _id: 1
         },
+      },
+      {
+        $skip: (page - 1) * limit,
+      },
+      {
+        $limit: limit,
       },
     ]).collation({ locale: "en", strength: 2 });
 
@@ -174,6 +174,7 @@ exports.getAllUsers = async (req, res) => {
     });
   }
 };
+
 
 exports.getUserById = async (req, res) => {
   try {
@@ -334,11 +335,11 @@ exports.googleLogin = async (req, res) => {
         firstName,
         lastName,
         avatar,
-        role: 'renter', // Asegúrate de que 'renter' es un valor válido en el enum de roles
-        birthday: new Date(), // Proporcionar una fecha de cumpleaños por defecto
+        role: 'renter', 
+        birthday: new Date(),
         created: new Date(),
         modified: new Date(),
-        password: uuidv4() // Genera un UUID como contraseña por defecto
+        password: uuidv4() 
       });
 
       await user.save();
